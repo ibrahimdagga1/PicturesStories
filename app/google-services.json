@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "2430157290",
+    "project_id": "pictures-stories",
+    "storage_bucket": "pictures-stories.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:2430157290:android:d6f5cb95d34b413724f293",
+        "android_client_info": {
+          "package_name": "com.example.picturesstories"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "2430157290-82ip30v8u9vo6lt9o9anceub4k3lq2fj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC1WkXtClDfLqBEh-I5rNFzivAMhUGim3c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "2430157290-82ip30v8u9vo6lt9o9anceub4k3lq2fj.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
