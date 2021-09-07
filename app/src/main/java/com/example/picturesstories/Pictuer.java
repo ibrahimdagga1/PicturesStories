@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.FileProvider;
 
 import android.Manifest;
 import android.app.Activity;
@@ -11,6 +12,8 @@ import android.app.DownloadManager;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -27,6 +30,8 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.facebook.share.Share;
+import com.facebook.share.model.ShareHashtag;
 import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.model.SharePhoto;
 import com.facebook.share.model.SharePhotoContent;
@@ -42,6 +47,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.List;
 
 public class Pictuer extends AppCompatActivity {
     private static final int SELECT_PICTURE = 1;
@@ -70,7 +76,14 @@ public class Pictuer extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
+                ShareHashtag shareHashTag = new ShareHashtag.Builder().setHashtag("#YOUR_HASHTAG").build();
+                ShareLinkContent shareLinkContent = new ShareLinkContent.Builder()
+                        .setShareHashtag(shareHashTag)
+                        .setQuote("Your Description")
+                        .setContentUrl(Uri.parse("image or logo [if playstore or app store url then no need of this image url]"))
+                        .build();
 
+                ShareDialog.show(Pictuer.this,shareLinkContent);
 
             }
         });
@@ -79,7 +92,19 @@ public class Pictuer extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
+
+
+/*
+                Uri uri = Uri.fromFile(new File());
+                Intent shareIntent = new Intent(android.content.Intent.ACTION_SEND);
+                shareIntent.setType("image/*");
+                shareIntent.putExtra(Intent.EXTRA_STREAM, uri);
+                shareIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+                shareIntent.setPackage("com.instagram.android"); //Instagram App package
+                startActivity(Intent.createChooser(shareIntent, "Share.."));*/
+
             }
+
         });
 
         image_download.setOnClickListener(new View.OnClickListener() {
@@ -205,4 +230,47 @@ public class Pictuer extends AppCompatActivity {
 
 
    }
+
+/*    public static boolean shareBitmap(Context context, Bitmap bitmap, String textToShare, String packageNameOfApp,
+                                      String intentMessage) {
+        try {
+            File file = new File(context.getCacheDir(), "Share.jpg");
+            saveBitmapAtLocation(bitmap, Bitmap.CompressFormat.JPEG, 100, file);
+            Uri contentUri = FileProvider.getUriForFile(context, context.getPackageName() + ".fileprovider", file);
+            Intent intent = new Intent();
+            intent.setAction(Intent.ACTION_SEND);
+            intent.putExtra(Intent.EXTRA_STREAM, contentUri);
+            String textToAppend = null;
+            textToAppend = context.getString(R.string.shortenUrl);
+            if (textToShare != null && !textToShare.isEmpty())
+                intent.putExtra(Intent.EXTRA_TEXT, textToShare + " " + textToAppend);
+            else
+                intent.putExtra(Intent.EXTRA_TEXT, textToAppend);
+            intent.setType("image/*");
+            List<ResolveInfo> resInfoList = context.getPackageManager().queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
+            for (ResolveInfo resolveInfo : resInfoList) {
+                String packageName = resolveInfo.activityInfo.packageName;
+                context.grantUriPermission(packageName, contentUri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            }
+            if (packageNameOfApp != null) {
+                if (appInstalledOrNot((Activity) context, packageNameOfApp))
+                    intent.setPackage(packageNameOfApp);
+                else
+                    return false;
+            }
+
+            context.startActivity(Intent.createChooser(intent, intentMessage));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return true;
+    }
+
+    private static void saveBitmapAtLocation(Bitmap bitmap, Bitmap.CompressFormat jpeg, int i, File file) {
+
+    }
+
+    private static boolean appInstalledOrNot(Activity context, String packageNameOfApp) {
+            return false;
+    }*/
 }

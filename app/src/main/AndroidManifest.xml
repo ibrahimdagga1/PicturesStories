@@ -17,6 +17,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppThem">
 
+        <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id"/>
+
         <provider android:authorities="com.facebook.app.FacebookContentProvider{APP_ID}"
             android:name="com.facebook.FacebookContentProvider"
             android:exported="true"/>

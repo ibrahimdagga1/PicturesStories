@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">Pictures Stories</string>
+    <string name="facebook_app_id">Facebook</string>
+    <string name="shortenUrl">shortenUrl</string>
+
 </resources>

@@ -57,6 +57,7 @@ dependencies {
         compile 'com.github.thekhaeng:recycler-margin:1.2.1'
 
         compile 'com.facebook.android:facebook-share:[5,6)'
+        implementation 'com.facebook.android:facebook-android-sdk:11.2.0'
 
 
     }
