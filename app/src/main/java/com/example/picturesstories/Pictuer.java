@@ -1,10 +1,15 @@
 package com.example.picturesstories;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
+import android.Manifest;
 import android.app.Activity;
+import android.app.DownloadManager;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -13,6 +18,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -32,7 +38,10 @@ import com.google.firebase.firestore.DocumentSnapshot;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 
 public class Pictuer extends AppCompatActivity {
     private static final int SELECT_PICTURE = 1;
@@ -40,12 +49,16 @@ public class Pictuer extends AppCompatActivity {
 
     private CollectionReference collectionReference;
     ImageView imageView,image_facebook,image_instagram,image_download,image_share;
+    OutputStream outputStream;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pictuer);
+
+        ActivityCompat.requestPermissions(Pictuer.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},1);
+        ActivityCompat.requestPermissions(Pictuer.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},1);
 
         imageView = findViewById(R.id.imageView);
         image_facebook = findViewById(R.id.picture_image_facebook);
@@ -70,8 +83,12 @@ public class Pictuer extends AppCompatActivity {
         });
 
         image_download.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.M)
             @Override
             public void onClick(View view) {
+
+                saveToGallery();
+
 
             }
         });
@@ -129,4 +146,63 @@ public class Pictuer extends AppCompatActivity {
             imageView.setImageBitmap(BitmapFactory.decodeFile(picturePath));
         }
     }*/
+
+    private void saveToGallery(){
+
+
+        BitmapDrawable bitmapDrawable = (BitmapDrawable) imageView.getDrawable();
+        Bitmap bitmap = bitmapDrawable.getBitmap();
+        FileOutputStream outputStream = null ;
+        File file = Environment.getExternalStorageDirectory();
+        File dir = new File(file.getAbsolutePath() + "/MyPics");
+        dir.mkdirs();
+
+        String filename = String.format("%d.png",System.currentTimeMillis());
+        File outFile = new File(dir,filename);
+        try{
+            outputStream = new FileOutputStream(outFile);
+            Toast.makeText(this, "تم الإضافة", Toast.LENGTH_SHORT).show();
+            bitmap.compress(Bitmap.CompressFormat.PNG,100,outputStream);
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        try{
+            outputStream.flush();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        try{
+            outputStream.close();
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+
+   /*     File filepath = Environment.getExternalStorageDirectory();
+        File dir = new File(filepath.getAbsolutePath()+"/Demo/");
+        dir.mkdir();
+        File file = new File(dir,System.currentTimeMillis()+".jpg");
+
+        try {
+            outputStream = new FileOutputStream(file);
+        }catch (FileNotFoundException e ){
+            e.printStackTrace();
+        }
+        bitmap.compress(Bitmap.CompressFormat.JPEG,100,outputStream);
+        Toast.makeText(this, "Image save", Toast.LENGTH_SHORT).show();
+        try {
+            outputStream.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            outputStream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+*/
+
+
    }
+}
