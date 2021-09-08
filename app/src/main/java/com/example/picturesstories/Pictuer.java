@@ -5,8 +5,10 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.FileProvider;
+import androidx.fragment.app.FragmentActivity;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.DownloadManager;
 import android.app.ProgressDialog;
@@ -30,16 +32,25 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
 import com.facebook.share.Share;
+import com.facebook.share.Sharer;
 import com.facebook.share.model.ShareHashtag;
 import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.model.SharePhoto;
 import com.facebook.share.model.SharePhotoContent;
+import com.facebook.share.model.ShareStoryContent;
+import com.facebook.share.widget.MessageDialog;
+import com.facebook.share.widget.ShareButton;
 import com.facebook.share.widget.ShareDialog;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -56,6 +67,7 @@ public class Pictuer extends AppCompatActivity {
     private CollectionReference collectionReference;
     ImageView imageView,image_facebook,image_instagram,image_download,image_share;
     OutputStream outputStream;
+    private int imageAlpha;
 
 
     @Override
@@ -75,15 +87,33 @@ public class Pictuer extends AppCompatActivity {
         image_facebook.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+//                ShareDialog shareDialog = new ShareDialog(getParent());
 
-                ShareHashtag shareHashTag = new ShareHashtag.Builder().setHashtag("#YOUR_HASHTAG").build();
+                Bitmap h = BitmapFactory.decodeResource(getResources(),R.id.picture_image_facebook);
+
+                SharePhoto photo = new SharePhoto.Builder()
+                        .setBitmap(h)
+                        .build();
+
+                SharePhotoContent contentP = new SharePhotoContent.Builder()
+                        .addPhoto(photo)
+                        .build();
+                ShareDialog.show(Pictuer.this,contentP);
+                MessageDialog.show(Pictuer.this, contentP);
+
+
+
+
+
+           /*     ShareHashtag shareHashTag = new ShareHashtag.Builder().setHashtag("#YOUR_HASHTAG").build();
                 ShareLinkContent shareLinkContent = new ShareLinkContent.Builder()
                         .setShareHashtag(shareHashTag)
                         .setQuote("Your Description")
                         .setContentUrl(Uri.parse("image or logo [if playstore or app store url then no need of this image url]"))
-                        .build();
+                        .build();*/
 
-                ShareDialog.show(Pictuer.this,shareLinkContent);
+//                shareButton.setShareContent(content);
+//                ShareDialog.show(Pictuer.this, content);
 
             }
         });
@@ -96,7 +126,7 @@ public class Pictuer extends AppCompatActivity {
 
 /*
                 Uri uri = Uri.fromFile(new File());
-                Intent shareIntent = new Intent(android.content.Intent.ACTION_SEND);
+                Intent shareIntent = new Intent(android.content.In tent.ACTION_SEND);
                 shareIntent.setType("image/*");
                 shareIntent.putExtra(Intent.EXTRA_STREAM, uri);
                 shareIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
@@ -112,7 +142,7 @@ public class Pictuer extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                saveToGallery();
+//                saveToGallery();
 
 
             }
@@ -171,6 +201,43 @@ public class Pictuer extends AppCompatActivity {
             imageView.setImageBitmap(BitmapFactory.decodeFile(picturePath));
         }
     }*/
+
+    public class Picture extends FragmentActivity {
+        CallbackManager callbackManager;
+        ShareDialog shareDialog;
+        @Override
+        public void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+            callbackManager = CallbackManager.Factory.create();
+            shareDialog = new ShareDialog(this);
+            shareDialog.registerCallback(callbackManager, new FacebookCallback<Sharer.Result>() {
+                @Override
+                public void onSuccess(Sharer.Result result) {
+                    Toast.makeText(Picture.this, "You shared this post", Toast.LENGTH_SHORT).show();
+
+                }
+
+                @Override
+                public void onCancel() {
+
+                }
+
+                @Override
+                public void onError(FacebookException error) {
+                    error.printStackTrace();
+
+                }
+            });
+        }
+
+        @Override
+        protected void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
+            super.onActivityResult(requestCode, resultCode, data);
+            callbackManager.onActivityResult(requestCode, resultCode, data);
+        }
+    }
+
+
 
     private void saveToGallery(){
 
