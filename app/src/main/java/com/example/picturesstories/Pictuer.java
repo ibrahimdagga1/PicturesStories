@@ -108,7 +108,6 @@ public class Pictuer extends AppCompatActivity {
 
 
 
-
            /*     ShareHashtag shareHashTag = new ShareHashtag.Builder().setHashtag("#YOUR_HASHTAG").build();
                 ShareLinkContent shareLinkContent = new ShareLinkContent.Builder()
                         .setShareHashtag(shareHashTag)
