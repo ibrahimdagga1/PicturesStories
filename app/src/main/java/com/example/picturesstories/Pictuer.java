@@ -67,7 +67,6 @@ public class Pictuer extends AppCompatActivity {
     private CollectionReference collectionReference;
     ImageView imageView,image_facebook,image_instagram,image_download,image_share;
     OutputStream outputStream;
-    private int imageAlpha;
 
 
     @Override
