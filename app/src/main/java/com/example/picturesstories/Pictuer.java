@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.FragmentActivity;
 
@@ -74,8 +75,12 @@ public class Pictuer extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pictuer);
 
-        ActivityCompat.requestPermissions(Pictuer.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},1);
-        ActivityCompat.requestPermissions(Pictuer.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},1);
+        if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(Pictuer.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+        }
+        if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(Pictuer.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
+        }
 
         imageView = findViewById(R.id.imageView);
         image_facebook = findViewById(R.id.picture_image_facebook);
