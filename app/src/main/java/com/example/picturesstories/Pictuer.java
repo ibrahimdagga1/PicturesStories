@@ -29,10 +29,12 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.android.volley.toolbox.NetworkImageView;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
@@ -53,12 +55,15 @@ import com.google.firebase.firestore.DocumentSnapshot;
 
 import org.jetbrains.annotations.Nullable;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.List;
 
 public class Pictuer extends AppCompatActivity {
@@ -87,6 +92,7 @@ public class Pictuer extends AppCompatActivity {
         image_instagram = findViewById(R.id.picture_image_instagram);
         image_share = findViewById(R.id.picture_image_share);
         image_download = findViewById(R.id.picture_image_download);
+
 
         image_facebook.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -145,8 +151,7 @@ public class Pictuer extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-//                saveToGallery();
-
+                downloadImageNew("DCIM","https://firebasestorage.googleapis.com/v0/b/pictures-stories.appspot.com/o/%D8%A7%D8%B3%D9%85.jpg?alt=media&token=ec7ca730-1889-4ea2-8ac8-5c6946670eac");
 
             }
         });
@@ -204,6 +209,23 @@ public class Pictuer extends AppCompatActivity {
             imageView.setImageBitmap(BitmapFactory.decodeFile(picturePath));
         }
     }*/
+private void downloadImageNew(String filename, String downloadUrlOfImage){
+    try{
+        DownloadManager dm = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
+        Uri downloadUri = Uri.parse(downloadUrlOfImage);
+        DownloadManager.Request request = new DownloadManager.Request(downloadUri);
+        request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI | DownloadManager.Request.NETWORK_MOBILE)
+                .setAllowedOverRoaming(false)
+                .setTitle(filename)
+                .setMimeType("image/jpeg") // Your file type. You can use this code to download other file types also.
+                .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+                .setDestinationInExternalPublicDir(Environment.DIRECTORY_PICTURES,File.separator + filename + ".jpg");
+        dm.enqueue(request);
+        Toast.makeText(this, "Image download started.", Toast.LENGTH_SHORT).show();
+    }catch (Exception e){
+        Toast.makeText(this, "Image download failed.", Toast.LENGTH_SHORT).show();
+    }
+}
 
     public class Picture extends FragmentActivity {
         CallbackManager callbackManager;
@@ -239,6 +261,8 @@ public class Pictuer extends AppCompatActivity {
             callbackManager.onActivityResult(requestCode, resultCode, data);
         }
     }
+
+
 
 
 
